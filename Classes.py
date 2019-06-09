@@ -30,7 +30,6 @@ class Representative():
 	def add_missing_policies(self, policy_ids):
 		"""
 		For each policy, creates a placeholder entry in `policies`. The placeholder values ([False, None]) are later updated according to voting history.
-
 		"""
 		for pol_id in policy_ids:
 			if not pol_id in self.policies:
@@ -58,6 +57,14 @@ class Party():
 	def get_member_objs(self, all_reps):
 		member_objs =[rep for rep in all_reps if rep.name in self.all_members]
 		return member_objs
+
+	def add_missing_policies(self, policy_ids):
+		"""
+		Equivalent to Representative method of same name.
+		"""
+		for pol_id in policy_ids:
+			if not pol_id in self.policies:
+				self.policies[pol_id] = [False, None]
 
 	def calc_ave_agreem(self, policy_id, all_reps):
 		"""

@@ -8,6 +8,10 @@ def read_policy_data(policy_id):
 		raw_policy_data = f.read()
 	return json.loads(raw_policy_data.decode('utf-8'))
 
+def fetch_policy_info(policy_id):
+	raw_data = read_policy_data(policy_id)
+	return raw_data["name"], raw_data["description"]
+
 def repackage_rep_data(raw_data):
 	rep_info = raw_data["person"]["latest_member"]
 	name = (rep_info["name"]["first"], rep_info["name"]["last"])
@@ -29,11 +33,10 @@ def get_or_make_rep(data, all_reps, policy_ids):
 	return obj
 
 
-def main():
+def main(policy_ids):
 
 	all_reps = []
 	all_parties = []
-	policy_ids = [1,2]
 
 	for pol_id in policy_ids:
 
@@ -45,9 +48,11 @@ def main():
 			data = repackage_rep_data(rep)
 			rep_obj = get_or_make_rep(data, all_reps, policy_ids)
 			rep_obj.update_pol_position(pol_id, data["voted"], data["agreement"])
-			_ = rep_obj.join_or_make_party(all_parties)
+			p = rep_obj.join_or_make_party(all_parties)
+			p.add_missing_policies(policy_ids)
 
-		for party in all_parties:
+	for party in all_parties:
+		for pol_id in policy_ids:
 			party.calc_ave_agreem(pol_id, all_reps)
 
 	for rep in all_reps:
@@ -56,4 +61,4 @@ def main():
 	return all_reps, all_parties
 
 if __name__ == "__main__":
-	r, p = main()
+	main([21])
