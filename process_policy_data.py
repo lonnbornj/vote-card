@@ -4,6 +4,8 @@ import pull_policy_data
 from Classes import *
 
 def read_policy_data(policy_id):
+	if not os.path.exists("data/policy{}.txt".format(policy_id)):
+			pull_policy_data.write_data(policy_id)
 	with open("data/policy{}.txt".format(policy_id), "rb") as f:
 		raw_policy_data = f.read()
 	return json.loads(raw_policy_data.decode('utf-8'))
@@ -40,8 +42,6 @@ def main(policy_ids):
 
 	for pol_id in policy_ids:
 
-		if not os.path.exists("data/policy{}.txt".format(pol_id)):
-			pull_policy_data.write_data(pol_id)
 		raw_data = read_policy_data(pol_id)
 
 		for rep in raw_data["people_comparisons"]:

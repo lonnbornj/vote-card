@@ -1,15 +1,24 @@
+"""
+Collects the user's views on n different policies, and finds MPs who have the most 
+similar/dissimilar views by computing the euclidean distance in an n-dimensional 
+vector space, weighted by the importance assigned these issues by the user.
+"""
 import process_policy_data
 import numpy as np
 import operator
-import time
-
 
 def weighted_eucl_dist(weights, v1, v2):
+	"""
+	Calculates the weighted Euclidean distance between two vectors
+	"""
 	norm = np.sqrt(len(v1))*100
 	dist_vec = np.array(v1)-np.array(v2)
 	return np.sqrt(np.sum(weights*(dist_vec)**2))/norm
 
 def get_user_input(question):
+	"""
+	Accepts and validates user input to a policy question.
+	"""
 	while True:
 			try:
 				inp = float(input("{}: ".format(question)))
@@ -21,13 +30,17 @@ def get_user_input(question):
 	return inp
 
 def quiz_user(policy_ids):
+	"""
+	Asks the user a series of questions on different policies,
+	and returns their agreement with and weighting of those issues as lists
+	"""
 
 	user_pos = []
 	user_weights = []
 
 	input("For each of the following statements, enter a number out of 100 indicating:\n" + 
 			"\ti.\tThe extent to which you agree;\n" +
-			"\tii.\tThe extent to which you feel the issue is important; in other words, the extent to which it is important to you that a politician agrees with your position on it.\n"
+			"\tii.\tThe extent to which you feel the issue is important; in other words, the extent to which it is important to you that a politician agrees with your position on it.\n" +
 		"100 means complete agreement (importance), 0 means complete disagreement (of no importance)\n\n" +
 		"Press ENTER to continue.")
 
@@ -47,6 +60,11 @@ def quiz_user(policy_ids):
 
 
 def get_dists(policy_ids, user_pos, user_weights):
+	"""
+	Computes the weighted euclidean distance (with respect to a series of policy
+	issues) between the user and everyone in parliament who has voted on one
+	of those issues.
+	"""
 	rep_dists = []
 	rep_objects, _ = process_policy_data.main(policy_ids)
 	for rep in rep_objects:
@@ -58,21 +76,18 @@ def get_dists(policy_ids, user_pos, user_weights):
 
 def main(policy_ids):
 
+	filename = "test"
+
 	user_pos, user_weights = quiz_user(policy_ids)
 	dists = get_dists(policy_ids, user_pos, user_weights)
-	print("\nYour political spirit animal is......\n")
-	print(dists[0][0].upper() + "!!! ({})".format(dists[0][1]))
-	print("...at a distance of {0:1.4f}".format(dists[0][2]))
-	input("Press ENTER. ")
-	print(	"\nA smaller distance means greater political affinity.\n" +
-			"The politicians closest to you in this `ideology-space` are:\n")
-	for i, dist in enumerate(dists[:10]):
-		print("{0}. {1[0]} ({1[1]}): {1[2]:1.4f}".format(i+1, dist))
-	input("Press ENTER. ")	
-	print("\n...While those furthest away are:")
-	for i, dist in enumerate(dists[-10:]):
-		print("{0}. {1[0]} ({1[1]}): {1[2]:1.4f}".format(len(dists)-i, dist))
+	with open ("{}.txt".format(filename), "w") as f:
+		for i, d in enumerate(dists):
+			f.write("{0}. {1[0]} ({1[1]}): {1[2]:1.4f}\n".format(i+1, d))
+		f.write("# INPUT\nPolicy IDs: {0}\nUser agreement: {1}\nUser weights: {2}".format(policy_ids, user_pos, user_weights))
+
+	print("\nFinding MPs who agree with you most...")
+	print("\nWrote output to {}.txt".format(filename))
 
 if __name__ == "__main__":
-	policy_ids = list(range(1,3))
+	policy_ids = list(range(1,26))
 	main(policy_ids)
