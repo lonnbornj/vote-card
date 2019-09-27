@@ -1,7 +1,7 @@
 """
 Collects the user's views on n different policies, and finds MPs who have the most 
-similar/dissimilar views by computing the euclidean distance in an n-dimensional 
-vector space, weighted by the importance assigned these issues by the user.
+similar views by computing the weighted euclidean distance in n-dimensional space.
+Uses the importance assigned these issues by the user as the weights.
 """
 import process_policy_data
 import numpy as np
@@ -11,7 +11,7 @@ def weighted_eucl_dist(weights, v1, v2):
 	"""
 	Calculates the weighted Euclidean distance between two vectors
 	"""
-	norm = np.sqrt(len(v1))*100
+	norm = len(v1)
 	dist_vec = np.array(v1)-np.array(v2)
 	return np.sqrt(np.sum(weights*(dist_vec)**2))/norm
 
