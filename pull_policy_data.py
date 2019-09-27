@@ -1,6 +1,6 @@
 import requests
 
-key = "XXXXXXXXXXXXXXXXXXXXX"
+key = "7qX4gpMGangyYJ6PraLZ"
 
 def get_data(policy_id):
 	http = "https://theyvoteforyou.org.au/api/v1/policies/" + policy_id + ".json?key=" + key

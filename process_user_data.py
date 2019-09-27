@@ -20,13 +20,13 @@ def get_user_input(question):
 	Accepts and validates user input to a policy question.
 	"""
 	while True:
-			try:
-				inp = float(input("{}: ".format(question)))
-				if inp < 0 or inp > 100:
-					raise ValueError
-				break
-			except ValueError:
-				print("Please enter a number between 0 and 100")
+		try:
+			inp = float(input("{}: ".format(question)))
+			if inp < 0 or inp > 100:
+				raise ValueError
+			break
+		except ValueError:
+			print("Please enter a number between 0 and 100")
 	return inp
 
 def quiz_user(policy_ids):

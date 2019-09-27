@@ -73,6 +73,16 @@ class Party():
 		member_objs = self.get_member_objs(all_reps)
 		mask = [r.policies[policy_id][0] for r in member_objs]
 		positions = np.array([r.policies[policy_id][1] for r in member_objs])[mask]
+
+		# x= [r.policies[policy_id][1] for r in member_objs]
+		# print("~~~~\n")
+		# for i, r in enumerate(member_objs[:20]):
+		# 	print(r.policies[policy_id], mask[i], x[i])
+		# print("~~~~\n")
+
+		positions = np.array([r.policies[policy_id][1] for r in member_objs])[mask]
+		# print(positions)
+
 		if len(positions)==0:
 			voted, ave_agreem = False, 50.0
 		else:
